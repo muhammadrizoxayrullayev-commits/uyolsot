@@ -258,7 +258,24 @@ async def search_olx_properties(
         page=page
     )
     
-    # If repair filter is applied, perform intelligent filtering
+    # Fetch listings from Telegram channels (@realestatemalak, @uzqurilish)
+    channel_ads = []
+    try:
+        from services.channels_service import search_channel_properties
+        channel_ads = await search_channel_properties(
+            district_query=district_query,
+            mahalla=mahalla,
+            property_type=property_type,
+            area_min=area_min,
+            area_max=area_max,
+            price_min=price_min,
+            price_max=price_max,
+            repair=repair
+        )
+    except Exception as e:
+        logger.error("Error fetching channel ads: %s", e)
+
+    # If repair filter is applied, perform intelligent filtering on OLX ads
     if repair and repair != "any":
         filtered = []
         for ad in ads:
@@ -274,8 +291,10 @@ async def search_olx_properties(
                     filtered.append(ad)
             else:
                 filtered.append(ad)
-        # If strict repair filter resulted in 0 ads, keep all ads rather than showing nothing
         if filtered:
-            return filtered
-            
-    return ads
+            ads = filtered
+
+    # Combine Telegram channel ads with OLX results
+    combined = channel_ads + ads
+    return combined if combined else ads
+

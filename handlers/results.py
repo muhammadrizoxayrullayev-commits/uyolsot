@@ -47,7 +47,8 @@ async def show_card_result(message: Message, results: list, current_idx: int, la
         url=ad.get("url"),
         current_idx=current_idx,
         total_count=len(results),
-        is_saved=is_saved
+        is_saved=is_saved,
+        source=ad.get("source", "olx")
     )
     
     photo_url = ad.get("photo")
@@ -94,7 +95,8 @@ async def callback_card_navigation(callback: CallbackQuery, state: FSMContext):
         url=ad.get("url"),
         current_idx=new_idx,
         total_count=len(results),
-        is_saved=is_saved
+        is_saved=is_saved,
+        source=ad.get("source", "olx")
     )
     
     await state.update_data(current_index=new_idx)
@@ -151,7 +153,8 @@ async def callback_add_favorite(callback: CallbackQuery, state: FSMContext):
             url=ad.get("url"),
             current_idx=current_idx,
             total_count=len(results),
-            is_saved=True
+            is_saved=True,
+            source=ad.get("source", "olx")
         )
         try:
             await callback.message.edit_reply_markup(reply_markup=kb)
@@ -185,7 +188,8 @@ async def callback_remove_favorite(callback: CallbackQuery, state: FSMContext):
         url=url,
         current_idx=current_idx,
         total_count=len(results),
-        is_saved=False
+        is_saved=False,
+        source=ad.get("source", "olx") if ad else "olx"
     )
     try:
         await callback.message.edit_reply_markup(reply_markup=kb)

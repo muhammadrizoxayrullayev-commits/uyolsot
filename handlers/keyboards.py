@@ -169,7 +169,8 @@ def get_card_keyboard(
     url: str,
     current_idx: int,
     total_count: int,
-    is_saved: bool = False
+    is_saved: bool = False,
+    source: str = "olx"
 ) -> InlineKeyboardMarkup:
     """Navigation and action keyboard for property cards."""
     nav_row = []
@@ -185,9 +186,14 @@ def get_card_keyboard(
     fav_btn_text = get_text(lang, "btn_remove_fav") if is_saved else get_text(lang, "btn_save_fav")
     fav_callback = f"fav_del:{ad_id}:{current_idx}" if is_saved else f"fav_add:{ad_id}:{current_idx}"
     
+    if source == "telegram":
+        open_link_text = "✈️ Telegram kanalida ko'rish" if lang == "uz" else ("✈️ Смотреть в Telegram" if lang == "ru" else "✈️ View in Telegram")
+    else:
+        open_link_text = get_text(lang, "btn_open_olx")
+        
     keyboard = [
         nav_row,
-        [InlineKeyboardButton(text=get_text(lang, "btn_open_olx"), url=url)],
+        [InlineKeyboardButton(text=open_link_text, url=url)],
         [
             InlineKeyboardButton(text=fav_btn_text, callback_data=fav_callback),
             InlineKeyboardButton(text=get_text(lang, "btn_new_search"), callback_data="action_new_search")
@@ -195,3 +201,4 @@ def get_card_keyboard(
         [InlineKeyboardButton(text=get_text(lang, "btn_main_menu"), callback_data="action_main_menu")]
     ]
     return InlineKeyboardMarkup(inline_keyboard=keyboard)
+
