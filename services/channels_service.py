@@ -14,6 +14,14 @@ from typing import List, Dict, Any, Optional
 logger = logging.getLogger(__name__)
 
 CHANNELS = [
+    "suniyintellektda_0dan_natija",
+    "davronrealtor_jiloy",
+    "Uy_joyim1",
+    "elyor_estate",
+    "raupovrealty",
+    "sotildi_uy",
+    "uybozortv",
+    "makonrealty_group",
     "realestatemalak",
     "uzqurilish"
 ]
