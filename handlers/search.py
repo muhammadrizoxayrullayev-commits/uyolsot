@@ -18,7 +18,7 @@ from handlers.keyboards import (
     get_price_keyboard,
     get_main_menu
 )
-from services.olx_service import search_olx_properties
+from services.aggregator_service import search_all_properties
 from handlers.results import show_card_result
 
 search_router = Router()
@@ -390,7 +390,7 @@ async def execute_search_and_show(message: Message, state: FSMContext, user_id: 
         parse_mode="Markdown"
     )
     
-    results = await search_olx_properties(
+    results = await search_all_properties(
         property_type=search_data.get("property_type", "any"),
         region_slug=search_data.get("region_slug", "tashkent"),
         district_query=search_data.get("district_query", ""),
