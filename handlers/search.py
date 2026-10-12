@@ -12,6 +12,7 @@ from handlers.keyboards import (
     get_regions_keyboard,
     get_districts_keyboard,
     get_skip_keyboard,
+    get_mahalla_keyboard,
     get_property_type_keyboard,
     get_area_keyboard,
     get_repair_keyboard,
@@ -141,7 +142,7 @@ async def process_district_selection(callback: CallbackQuery, state: FSMContext)
     await state.set_state(SearchStates.waiting_for_mahalla)
     await callback.message.edit_text(
         get_text(lang, "step_mahalla"),
-        reply_markup=get_skip_keyboard(lang, back_callback="back_to_district"),
+        reply_markup=get_mahalla_keyboard(district_val, lang, region_id=region_id, back_callback="back_to_district"),
         parse_mode="Markdown"
     )
     await callback.answer()
@@ -179,6 +180,22 @@ async def process_mahalla_text(message: Message, state: FSMContext):
         parse_mode="Markdown"
     )
 
+@search_router.callback_query(SearchStates.waiting_for_mahalla, F.data.startswith("mahalla:"))
+async def process_mahalla_selection(callback: CallbackQuery, state: FSMContext):
+    mahalla = callback.data.split(":", 1)[1]
+    await state.update_data(mahalla=mahalla)
+    
+    user_id = callback.from_user.id
+    lang = await get_user_language(user_id)
+    
+    await state.set_state(SearchStates.waiting_for_property_type)
+    await callback.message.edit_text(
+        get_text(lang, "step_property_type"),
+        reply_markup=get_property_type_keyboard(lang),
+        parse_mode="Markdown"
+    )
+    await callback.answer()
+
 @search_router.callback_query(SearchStates.waiting_for_mahalla, F.data == "skip_step")
 async def skip_mahalla_step(callback: CallbackQuery, state: FSMContext):
     await state.update_data(mahalla="")
@@ -198,10 +215,13 @@ async def back_to_mahalla(callback: CallbackQuery, state: FSMContext):
     user_id = callback.from_user.id
     lang = await get_user_language(user_id)
     
+    data = await state.get_data()
+    district_id = data.get("district_id", "")
+    region_id = data.get("region_id", "tashkent_city")
     await state.set_state(SearchStates.waiting_for_mahalla)
     await callback.message.edit_text(
         get_text(lang, "step_mahalla"),
-        reply_markup=get_skip_keyboard(lang, back_callback="back_to_district"),
+        reply_markup=get_mahalla_keyboard(district_id, lang, region_id=region_id, back_callback="back_to_district"),
         parse_mode="Markdown"
     )
     await callback.answer()
@@ -394,6 +414,7 @@ async def execute_search_and_show(message: Message, state: FSMContext, user_id: 
         property_type=search_data.get("property_type", "any"),
         region_slug=search_data.get("region_slug", "tashkent"),
         district_query=search_data.get("district_query", ""),
+        district_id=search_data.get("district_id", ""),
         mahalla=search_data.get("mahalla", ""),
         area_min=search_data.get("area_min"),
         area_max=search_data.get("area_max"),

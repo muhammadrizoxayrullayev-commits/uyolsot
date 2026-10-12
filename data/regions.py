@@ -209,3 +209,600 @@ def get_district_by_id(region_id: str, district_id: str):
         if d["id"] == district_id:
             return d
     return None
+
+# Popular mahallas/areas for main districts to show as buttons
+DISTRICT_MAHALLAS = {
+    # Toshkent shahri (12 ta tuman)
+    "chilonzor": [
+        {"name": "Dombirobod", "icon": "🏡"},
+        {"name": "Qatortol", "icon": "🏙"},
+        {"name": "Novza", "icon": "🌳"},
+        {"name": "Oqtepa", "icon": "⛲️"},
+        {"name": "Chilonzor 1-9", "icon": "🏢"},
+        {"name": "Chilonzor 16-20", "icon": "🏢"},
+        {"name": "Muqimiy", "icon": "🛣"},
+        {"name": "Chilonzor metro", "icon": "🚇"},
+        {"name": "Algoritm", "icon": "🏬"},
+        {"name": "Gavhar", "icon": "🏡"},
+    ],
+    "yunusobod": [
+        {"name": "Bodomzor", "icon": "🌳"},
+        {"name": "Shahriston", "icon": "🚉"},
+        {"name": "Minor", "icon": "🕌"},
+        {"name": "Oloy bozori", "icon": "🏪"},
+        {"name": "Yunusobod 1-6", "icon": "🏢"},
+        {"name": "Yunusobod 7-12", "icon": "🏢"},
+        {"name": "Yunusobod 13-19", "icon": "🏢"},
+        {"name": "Teleminora", "icon": "🗼"},
+        {"name": "Hasanboy", "icon": "🏞"},
+        {"name": "Ahmad Donish", "icon": "🏬"},
+    ],
+    "mirzo_ulugbek": [
+        {"name": "Buyuk Ipak Yo'li", "icon": "🚇"},
+        {"name": "Qorasuv 1-6", "icon": "🌊"},
+        {"name": "TTZ", "icon": "🏭"},
+        {"name": "Darxon", "icon": "🏛"},
+        {"name": "Oqqo'rg'on", "icon": "🌳"},
+        {"name": "Feruza", "icon": "🏙"},
+        {"name": "Hamid Olimjon", "icon": "🏡"},
+        {"name": "Parkent bozori", "icon": "🏘"},
+        {"name": "Bo'zbozor", "icon": "🌲"},
+        {"name": "C-1 / C-2", "icon": "🏢"},
+    ],
+    "yakkasaroy": [
+        {"name": "Rakat", "icon": "🌳"},
+        {"name": "Boshliq", "icon": "🏢"},
+        {"name": "Qushbegi", "icon": "✈️"},
+        {"name": "Bobur bog'i", "icon": "🌺"},
+        {"name": "Shota Rustaveli", "icon": "🛣"},
+        {"name": "Grand Mir", "icon": "🏢"},
+        {"name": "Bo'rijar", "icon": "🌊"},
+        {"name": "Teatralniy", "icon": "🏡"},
+        {"name": "Kosmonavtlar", "icon": "🚀"},
+        {"name": "O'qchi", "icon": "🏛"},
+    ],
+    "mirobod": [
+        {"name": "Oybek", "icon": "🚇"},
+        {"name": "Gospitalniy", "icon": "🏥"},
+        {"name": "Shevchenko", "icon": "🏢"},
+        {"name": "Chexov", "icon": "🏬"},
+        {"name": "Shimoliy vokzal", "icon": "🚉"},
+        {"name": "Qo'yliq", "icon": "🌊"},
+        {"name": "Sariko'l", "icon": "🌳"},
+        {"name": "Tong yulduzi", "icon": "🏡"},
+        {"name": "Mirobod bozori", "icon": "🏢"},
+        {"name": "Nukus ko'chasi", "icon": "🛣"},
+    ],
+    "yashnobod": [
+        {"name": "Kadisheva", "icon": "🏪"},
+        {"name": "Aviasozlar 1-4", "icon": "✈️"},
+        {"name": "Tuzel 1-4", "icon": "🏢"},
+        {"name": "Do'stlik", "icon": "🚇"},
+        {"name": "Go'zal", "icon": "🌳"},
+        {"name": "Panjshanba", "icon": "🏘"},
+        {"name": "Farg'ona yo'li", "icon": "🛣"},
+        {"name": "Ashxobod bog'i", "icon": "🏢"},
+        {"name": "Olmos", "icon": "🏡"},
+        {"name": "Lisunova", "icon": "🏬"},
+    ],
+    "olmazor": [
+        {"name": "Qoraqamish 1/1-2/5", "icon": "🏢"},
+        {"name": "Sebzor", "icon": "🌳"},
+        {"name": "Beruniy metro", "icon": "🚇"},
+        {"name": "Talabalar shaharchasi", "icon": "🎓"},
+        {"name": "Chig'atoy", "icon": "🏙"},
+        {"name": "Hazrati Imom", "icon": "🕌"},
+        {"name": "Qorasaroy", "icon": "🏬"},
+        {"name": "Chuqursoy", "icon": "🏞"},
+        {"name": "G'alaba bog'i", "icon": "🏡"},
+        {"name": "Forobiy", "icon": "🛣"},
+    ],
+    "shayxontohur": [
+        {"name": "Chorsu", "icon": "🕌"},
+        {"name": "Qoratosh", "icon": "🏢"},
+        {"name": "Labzak", "icon": "🏬"},
+        {"name": "Ibn Sino 1-2", "icon": "🏥"},
+        {"name": "Sirk / Xadra", "icon": "🎪"},
+        {"name": "Samarqand darvoza", "icon": "🌳"},
+        {"name": "Taxtapul", "icon": "🏙"},
+        {"name": "Jangoh", "icon": "🏛"},
+        {"name": "Markaz-14/15", "icon": "🏢"},
+        {"name": "Oqlon", "icon": "🏡"},
+    ],
+    "uchtepa": [
+        {"name": "O'rikzor bozori", "icon": "🏪"},
+        {"name": "Farhod bozori", "icon": "🏬"},
+        {"name": "Algoritm", "icon": "🏢"},
+        {"name": "Chilonzor 21-26", "icon": "🏢"},
+        {"name": "Vatan k/t", "icon": "🌳"},
+        {"name": "Katta Qani", "icon": "🛣"},
+        {"name": "Cho'ponota", "icon": "🏡"},
+        {"name": "Taqachi", "icon": "🏙"},
+        {"name": "Shirin", "icon": "🏢"},
+        {"name": "Zargarlik", "icon": "🏬"},
+    ],
+    "sergeli": [
+        {"name": "Sputnik 1-16", "icon": "🏢"},
+        {"name": "Sergeli yarmarkasi", "icon": "🏬"},
+        {"name": "Yangi Sergeli", "icon": "🏗"},
+        {"name": "Choshtepa", "icon": "🚇"},
+        {"name": "Qo'shqo'rg'on", "icon": "🌳"},
+        {"name": "Do'stlik 1-2", "icon": "🏢"},
+        {"name": "Qipchoq", "icon": "🏡"},
+        {"name": "Quruvchilar", "icon": "🏗"},
+        {"name": "Yangi Sergeli yo'li", "icon": "🛣"},
+        {"name": "Sug'diyona", "icon": "🏢"},
+    ],
+    "yangihayot": [
+        {"name": "Yo'ldosh", "icon": "🏢"},
+        {"name": "Choshtepa metro", "icon": "🌳"},
+        {"name": "Yangi Darxon", "icon": "🏙"},
+        {"name": "Binokor", "icon": "🏘"},
+        {"name": "THAY halqa yo'li", "icon": "🛣"},
+        {"name": "Yangihayot 1-5", "icon": "🏢"},
+        {"name": "Oriat", "icon": "🏡"},
+        {"name": "Yangi Choshtepa", "icon": "🏢"},
+    ],
+    "bektemir": [
+        {"name": "Qo'yliq bozori", "icon": "🏪"},
+        {"name": "Suvsoz 1-2", "icon": "🏢"},
+        {"name": "Majnuntol", "icon": "🌳"},
+        {"name": "Bektemir markaz", "icon": "🏭"},
+        {"name": "Husayn Boyqaro", "icon": "🏞"},
+        {"name": "Ohangaron shossesi", "icon": "🛣"},
+        {"name": "Rohat ko'li", "icon": "🏡"},
+        {"name": "Binokor", "icon": "🏢"},
+    ],
+
+    # Toshkent viloyati
+    "chirchiq": [
+        {"name": "1-4 mikrorayon", "icon": "🏢"},
+        {"name": "Avezov", "icon": "🌳"},
+        {"name": "Chirchiq vokzal", "icon": "🚉"},
+        {"name": "Troitsk", "icon": "🏭"},
+        {"name": "Barakat bozori", "icon": "🏬"},
+        {"name": "Damba", "icon": "🌊"},
+    ],
+    "olmaliq": [
+        {"name": "5-mikrorayon", "icon": "🏢"},
+        {"name": "Metallurg", "icon": "🌳"},
+        {"name": "Markaziy bozor", "icon": "🏬"},
+        {"name": "Raduga", "icon": "🏡"},
+        {"name": "Ramiz bog'i", "icon": "🌳"},
+    ],
+    "angren": [
+        {"name": "1-5 dahalar", "icon": "🏢"},
+        {"name": "Angren markaz", "icon": "🌳"},
+        {"name": "Dehqon bozor", "icon": "🏬"},
+        {"name": "Yangiobod", "icon": "🏡"},
+        {"name": "Shaxtyor", "icon": "🏭"},
+    ],
+    "bekobod": [
+        {"name": "1-14 mavzelar", "icon": "🏢"},
+        {"name": "Bekobod markaz", "icon": "🌳"},
+        {"name": "Metallurg", "icon": "🏭"},
+        {"name": "Dehqon bozor", "icon": "🏬"},
+    ],
+    "zangiota": [
+        {"name": "Eshonguzar", "icon": "🕌"},
+        {"name": "Nazarbek", "icon": "🏡"},
+        {"name": "Qashqarlik", "icon": "🏡"},
+        {"name": "Erkin", "icon": "🏡"},
+        {"name": "Keles atrofi", "icon": "🌳"},
+        {"name": "O'rikzor atrofi", "icon": "🏪"},
+    ],
+    "qibray": [
+        {"name": "Qibray markaz", "icon": "🌳"},
+        {"name": "O'nqo'rg'on", "icon": "🏡"},
+        {"name": "Baytqo'rg'on", "icon": "🏡"},
+        {"name": "Salar", "icon": "🌳"},
+        {"name": "Bo'zsuv", "icon": "🌊"},
+        {"name": "ToshGres", "icon": "🏡"},
+    ],
+    "toshkent_t": [
+        {"name": "Keles shahar", "icon": "🏡"},
+        {"name": "Hasanboy atrofi", "icon": "🏡"},
+        {"name": "Ko'ksaroy", "icon": "🏡"},
+        {"name": "Chuqursoy atrofi", "icon": "🌳"},
+        {"name": "G'ishtko'prik", "icon": "🌉"},
+    ],
+    "yangiyol": [
+        {"name": "Yangiyo'l markaz", "icon": "🏢"},
+        {"name": "Gulbahor", "icon": "🚉"},
+        {"name": "Niyozbosh", "icon": "🏡"},
+        {"name": "Yangiyo'l bozor", "icon": "🏬"},
+        {"name": "Sho'ralisoy", "icon": "🏡"},
+    ],
+    "bostoliq": [
+        {"name": "G'azalkent", "icon": "🏔"},
+        {"name": "Chorvoq", "icon": "🌊"},
+        {"name": "Chimyon", "icon": "🏔"},
+        {"name": "Xumson", "icon": "🌲"},
+        {"name": "Burchmulla", "icon": "🏡"},
+        {"name": "Soyliq", "icon": "🏞"},
+    ],
+    "yuqorichirchiq": [
+        {"name": "Yangibozor", "icon": "🌳"},
+        {"name": "Bardanko'l", "icon": "🏡"},
+        {"name": "Mirobod qishloq", "icon": "🏡"},
+        {"name": "Parkent yo'li", "icon": "🌳"},
+    ],
+
+    # Samarqand viloyati
+    "samarkand_sh": [
+        {"name": "Registon", "icon": "🕌"},
+        {"name": "Sug'diyona", "icon": "🏢"},
+        {"name": "Gagarin", "icon": "🌳"},
+        {"name": "Vokzal", "icon": "🚉"},
+        {"name": "Siyob bozori", "icon": "🕌"},
+        {"name": "Sartepo mavzesi", "icon": "🏬"},
+        {"name": "Mikrorayon", "icon": "🏢"},
+        {"name": "Spitamen", "icon": "🛣"},
+    ],
+    "kattaqorgon": [
+        {"name": "Kattaqo'rg'on markaz", "icon": "🏢"},
+        {"name": "Dehqon bozor", "icon": "🏬"},
+        {"name": "Vokzal", "icon": "🚉"},
+    ],
+    "urgut": [
+        {"name": "Urgut bozor", "icon": "🏬"},
+        {"name": "Urgut markaz", "icon": "🌳"},
+        {"name": "Pochvon", "icon": "🏡"},
+    ],
+    "pastdargom": [
+        {"name": "Juma shahar", "icon": "🌳"},
+        {"name": "Markaz", "icon": "🏡"},
+    ],
+    "samarkand_t": [
+        {"name": "Gulobod", "icon": "🏡"},
+        {"name": "Qorasuv mavzesi", "icon": "🌳"},
+        {"name": "Motrid", "icon": "🏡"},
+    ],
+
+    # Farg'ona viloyati
+    "fergana_sh": [
+        {"name": "Farg'ona markaz", "icon": "🌳"},
+        {"name": "Qirguli dahasi", "icon": "🏢"},
+        {"name": "Frunzenskiy", "icon": "🏬"},
+        {"name": "Al-Farg'oniy bog'i", "icon": "🌳"},
+        {"name": "1-mikrorayon", "icon": "🏢"},
+        {"name": "Oq-ariq", "icon": "🏬"},
+    ],
+    "qoqon": [
+        {"name": "Xudoyorxon o'rdasi", "icon": "🏛"},
+        {"name": "Charxiy", "icon": "🏢"},
+        {"name": "Yangi bozor", "icon": "🏬"},
+        {"name": "Qo'qon markaz", "icon": "🏡"},
+    ],
+    "margilon": [
+        {"name": "Ipakchilar", "icon": "🧣"},
+        {"name": "Xonaqa", "icon": "🕌"},
+        {"name": "Vokzal bo'yi", "icon": "🏬"},
+        {"name": "Buloqboshi", "icon": "🏡"},
+    ],
+    "quvasoy": [
+        {"name": "Quvasoy markaz", "icon": "🌳"},
+        {"name": "Do'stlik", "icon": "🏢"},
+        {"name": "Sementchilar", "icon": "🏭"},
+    ],
+    "rishton": [
+        {"name": "Kulollar markazi", "icon": "🏺"},
+        {"name": "Rishton markaz", "icon": "🌳"},
+    ],
+
+    # Andijon viloyati
+    "andijan_sh": [
+        {"name": "Yangi bozor", "icon": "🏢"},
+        {"name": "Eski shahar", "icon": "🏬"},
+        {"name": "1-5 mikrorayonlar", "icon": "🏢"},
+        {"name": "Bobur shohko'chasi", "icon": "🌳"},
+        {"name": "Klara Setkin", "icon": "🏡"},
+        {"name": "2-kichik daha", "icon": "🏢"},
+    ],
+    "asaka": [
+        {"name": "Avtozavod atrofi", "icon": "🚗"},
+        {"name": "Asaka markaz", "icon": "🌳"},
+        {"name": "Dehqon bozor", "icon": "🏬"},
+    ],
+    "shaxrixon": [
+        {"name": "Shahrixon markaz", "icon": "🌳"},
+        {"name": "Bozor atrofi", "icon": "🏬"},
+        {"name": "Shahrixonsoy", "icon": "🏡"},
+    ],
+    "xonobod": [
+        {"name": "Suv ombori", "icon": "🌊"},
+        {"name": "Xonobod markaz", "icon": "🌳"},
+        {"name": "Fozilmon", "icon": "🏔"},
+    ],
+
+    # Namangan viloyati
+    "namangan_sh": [
+        {"name": "Chorsu", "icon": "🌳"},
+        {"name": "Davlatobod dahasi", "icon": "🏢"},
+        {"name": "Sardoba", "icon": "🏬"},
+        {"name": "Yangi Namangan", "icon": "🌳"},
+        {"name": "1-6 mikrorayonlar", "icon": "🏢"},
+        {"name": "Afsonalar vodiysi", "icon": "🌸"},
+    ],
+    "chust": [
+        {"name": "Chust markaz", "icon": "🌳"},
+        {"name": "Pichoqchilar", "icon": "🔪"},
+        {"name": "Bozor", "icon": "🏬"},
+    ],
+    "kosonsoy": [
+        {"name": "Kosonsoy markaz", "icon": "🏞"},
+        {"name": "Bog'ishamol", "icon": "🌳"},
+    ],
+
+    # Buxoro viloyati
+    "bukhara_sh": [
+        {"name": "Labihovuz", "icon": "🕌"},
+        {"name": "5-6 mikrorayon", "icon": "🏢"},
+        {"name": "Karvon bozor", "icon": "🏬"},
+        {"name": "Shoxrux", "icon": "🌳"},
+        {"name": "Ark atrofi", "icon": "🏢"},
+        {"name": "Somoniylar bog'i", "icon": "🕌"},
+    ],
+    "gijduvon": [
+        {"name": "G'ijduvon markaz", "icon": "🌳"},
+        {"name": "Kulollar", "icon": "🏺"},
+        {"name": "Bozor", "icon": "🏬"},
+    ],
+    "kogon": [
+        {"name": "Kogon vokzal", "icon": "🚉"},
+        {"name": "Kogon markaz", "icon": "🌳"},
+        {"name": "Mikrorayon", "icon": "🏢"},
+    ],
+
+    # Qashqadaryo viloyati
+    "qarshi_sh": [
+        {"name": "Batumi", "icon": "🏢"},
+        {"name": "Yangi bozor", "icon": "🏬"},
+        {"name": "Registon", "icon": "🌳"},
+        {"name": "1-8 mikrorayonlar", "icon": "🏢"},
+        {"name": "Nasaf", "icon": "🛣"},
+    ],
+    "shahrisabz": [
+        {"name": "Oqsaroy atrofi", "icon": "🏛"},
+        {"name": "Shahrisabz markaz", "icon": "🌳"},
+        {"name": "Dehqon bozor", "icon": "🏬"},
+        {"name": "Ipak yo'li", "icon": "🛣"},
+        {"name": "Chorsu", "icon": "🕌"},
+    ],
+    "koson": [
+        {"name": "Koson markaz", "icon": "🌳"},
+        {"name": "Dehqon bozor", "icon": "🏬"},
+        {"name": "Pudina", "icon": "🏡"},
+        {"name": "Mudin", "icon": "🏡"},
+    ],
+
+    # Surxondaryo viloyati
+    "termiz_sh": [
+        {"name": "Termiz markaz", "icon": "🌳"},
+        {"name": "Alpomish", "icon": "🏢"},
+        {"name": "Termiz bozor", "icon": "🏬"},
+        {"name": "Termiziy", "icon": "🏢"},
+    ],
+    "denov": [
+        {"name": "Denov bozor", "icon": "🏬"},
+        {"name": "Denov markaz", "icon": "🌳"},
+        {"name": "Qoraxon", "icon": "🏡"},
+        {"name": "Yurchi", "icon": "🏡"},
+    ],
+    "sherobod": [
+        {"name": "Sherobod markaz", "icon": "🌳"},
+        {"name": "Xo'jamulki", "icon": "🏡"},
+        {"name": "Bozor atrofi", "icon": "🏬"},
+    ],
+
+    # Xorazm viloyati
+    "urganch_sh": [
+        {"name": "Urganch markaz", "icon": "🌳"},
+        {"name": "Shovot bo'yi", "icon": "🏬"},
+        {"name": "Yoshlik", "icon": "🏢"},
+        {"name": "1-mikrorayon", "icon": "🏢"},
+    ],
+    "xiva": [
+        {"name": "Ichan qal'a", "icon": "🕌"},
+        {"name": "Yangi shahar", "icon": "🏢"},
+        {"name": "Dehqon bozor", "icon": "🏬"},
+    ],
+    "hazarasp": [
+        {"name": "Hazorasp markaz", "icon": "🌳"},
+        {"name": "Bozor atrofi", "icon": "🏬"},
+        {"name": "Pitnak", "icon": "🏭"},
+    ],
+
+    # Navoiy viloyati
+    "navoiy_sh": [
+        {"name": "1-10 mikrorayonlar", "icon": "🏢"},
+        {"name": "Navoiy parki", "icon": "🌳"},
+        {"name": "Markaziy bozor", "icon": "🏬"},
+        {"name": "G'alaba shohko'chasi", "icon": "🏢"},
+    ],
+    "zarafshon": [
+        {"name": "1-mikrorayon", "icon": "🏢"},
+        {"name": "2-mikrorayon", "icon": "🏢"},
+        {"name": "3-4 mikrorayonlar", "icon": "🏢"},
+        {"name": "Zarafshon markaz", "icon": "🌳"},
+    ],
+    "karmana": [
+        {"name": "Karmana markaz", "icon": "🌳"},
+        {"name": "Mir Said Bahrom", "icon": "🕌"},
+        {"name": "Bozor", "icon": "🏬"},
+    ],
+
+    # Jizzax viloyati
+    "jizzax_sh": [
+        {"name": "Jizzax markaz", "icon": "🌳"},
+        {"name": "Sayiljoy", "icon": "🏢"},
+        {"name": "Toshkentlik", "icon": "🏬"},
+        {"name": "Olmazor mavzesi", "icon": "🏢"},
+    ],
+    "zomin": [
+        {"name": "Zomin markaz", "icon": "🌳"},
+        {"name": "Zomin sanatoriy", "icon": "🏔"},
+        {"name": "Dashtobod", "icon": "🏡"},
+    ],
+    "gallaorol": [
+        {"name": "G'allaorol markaz", "icon": "🌳"},
+        {"name": "Marjonbuloq", "icon": "🏡"},
+        {"name": "Bozor", "icon": "🏬"},
+    ],
+
+    # Sirdaryo viloyati
+    "guliston_sh": [
+        {"name": "Guliston 1-4 mavzelar", "icon": "🏢"},
+        {"name": "Guliston markaz", "icon": "🌳"},
+        {"name": "Dehqon bozor", "icon": "🏬"},
+    ],
+    "shirin": [
+        {"name": "Shirin markaz", "icon": "🌳"},
+        {"name": "Farhod GES", "icon": "⚡️"},
+        {"name": "Energetiklar", "icon": "🏢"},
+    ],
+    "yangiyer": [
+        {"name": "Yangiyer markaz", "icon": "🏢"},
+        {"name": "1-mikrorayon", "icon": "🏢"},
+        {"name": "Vokzal", "icon": "🚉"},
+    ],
+
+    # Qoraqalpog'iston Respublikasi
+    "nukus_sh": [
+        {"name": "Nukus 22-23 mikrorayon", "icon": "🏢"},
+        {"name": "Markaziy bozor", "icon": "🏬"},
+        {"name": "Berdaq shohko'chasi", "icon": "🌳"},
+        {"name": "Muzey atrofi", "icon": "🏛"},
+    ],
+    "beruniy": [
+        {"name": "Beruniy markaz", "icon": "🌳"},
+        {"name": "Bozor", "icon": "🏬"},
+        {"name": "Do'stlik", "icon": "🏡"},
+    ],
+    "xojayli": [
+        {"name": "Xo'jayli markaz", "icon": "🌳"},
+        {"name": "Vokzal", "icon": "🚉"},
+        {"name": "Bozor", "icon": "🏬"},
+    ],
+    "qongirot": [
+        {"name": "Qo'ng'irot markaz", "icon": "🌳"},
+        {"name": "Bozor", "icon": "🏬"},
+        {"name": "Oltinko'l", "icon": "🏡"},
+    ]
+}
+
+# Popular areas fallback for when entire region is chosen (district: "all")
+REGION_POPULAR_AREAS = {
+    "tashkent_city": [
+        {"name": "Chilonzor", "icon": "🏡"},
+        {"name": "Yunusobod", "icon": "🏙"},
+        {"name": "Novza", "icon": "🌳"},
+        {"name": "Qatortol", "icon": "🏙"},
+        {"name": "Buyuk Ipak Yo'li", "icon": "🚇"},
+        {"name": "Bodomzor", "icon": "🌳"},
+        {"name": "Oybek", "icon": "🚇"},
+        {"name": "Sergeli", "icon": "🏢"},
+        {"name": "Qoraqamish", "icon": "🏢"},
+        {"name": "TTZ", "icon": "🏭"},
+        {"name": "Qorasuv", "icon": "🌊"},
+        {"name": "Chorsu", "icon": "🕌"},
+    ],
+    "tashkent_obl": [
+        {"name": "Chirchiq", "icon": "🏢"},
+        {"name": "Olmaliq", "icon": "🏭"},
+        {"name": "Angren", "icon": "⛏"},
+        {"name": "Zangiota", "icon": "🕌"},
+        {"name": "Qibray", "icon": "🌳"},
+        {"name": "Yangiyo'l", "icon": "🏡"},
+        {"name": "Chorvoq", "icon": "🌊"},
+        {"name": "G'azalkent", "icon": "🏔"},
+    ],
+    "samarkand": [
+        {"name": "Registon", "icon": "🕌"},
+        {"name": "Sug'diyona", "icon": "🏢"},
+        {"name": "Gagarin", "icon": "🌳"},
+        {"name": "Sartepo", "icon": "🏬"},
+        {"name": "Siyob bozori", "icon": "🕌"},
+        {"name": "Kattaqo'rg'on", "icon": "🏢"},
+    ],
+    "fergana": [
+        {"name": "Farg'ona markaz", "icon": "🌳"},
+        {"name": "Qirguli", "icon": "🏢"},
+        {"name": "Qo'qon", "icon": "🏛"},
+        {"name": "Marg'ilon", "icon": "🧣"},
+        {"name": "Quvasoy", "icon": "🏢"},
+        {"name": "Rishton", "icon": "🏺"},
+    ],
+    "andijan": [
+        {"name": "Yangi bozor", "icon": "🏢"},
+        {"name": "Eski shahar", "icon": "🏬"},
+        {"name": "Mikrorayon", "icon": "🏢"},
+        {"name": "Asaka", "icon": "🚗"},
+        {"name": "Shahrixon", "icon": "🌳"},
+        {"name": "Xonobod", "icon": "🌊"},
+    ],
+    "namangan": [
+        {"name": "Chorsu", "icon": "🌳"},
+        {"name": "Davlatobod", "icon": "🏢"},
+        {"name": "Sardoba", "icon": "🏬"},
+        {"name": "Chust", "icon": "🔪"},
+        {"name": "Afsonalar vodiysi", "icon": "🌸"},
+    ],
+    "bukhara": [
+        {"name": "Labihovuz", "icon": "🕌"},
+        {"name": "5-6 mikrorayon", "icon": "🏢"},
+        {"name": "Karvon bozor", "icon": "🏬"},
+        {"name": "G'ijduvon", "icon": "🏺"},
+        {"name": "Kogon", "icon": "🚉"},
+    ],
+    "kashkadarya": [
+        {"name": "Batumi", "icon": "🏢"},
+        {"name": "Yangi bozor", "icon": "🏬"},
+        {"name": "Shahrisabz", "icon": "🌳"},
+        {"name": "Registon", "icon": "🏢"},
+    ],
+    "surxondaryo": [
+        {"name": "Termiz markaz", "icon": "🌳"},
+        {"name": "Alpomish", "icon": "🏢"},
+        {"name": "Denov bozor", "icon": "🏬"},
+    ],
+    "khorezm": [
+        {"name": "Urganch markaz", "icon": "🌳"},
+        {"name": "Ichan qal'a (Xiva)", "icon": "🕌"},
+        {"name": "Shovot bo'yi", "icon": "🏢"},
+    ],
+    "navoiy": [
+        {"name": "1-10 mikrorayon", "icon": "🏢"},
+        {"name": "Navoiy markaz", "icon": "🌳"},
+        {"name": "Zarafshon", "icon": "🏢"},
+    ],
+    "jizzax": [
+        {"name": "Jizzax markaz", "icon": "🌳"},
+        {"name": "Sayiljoy", "icon": "🏢"},
+        {"name": "Zomin sanatoriy", "icon": "🏔"},
+    ],
+    "sirdaryo": [
+        {"name": "Guliston markaz", "icon": "🌳"},
+        {"name": "1-4 mavzelar", "icon": "🏢"},
+        {"name": "Yangiyer", "icon": "🚉"},
+    ],
+    "karakalpakstan": [
+        {"name": "Nukus markaz", "icon": "🏢"},
+        {"name": "Markaziy bozor", "icon": "🏬"},
+        {"name": "Beruniy", "icon": "🌳"},
+        {"name": "Xo'jayli", "icon": "🚉"},
+    ]
+}
+
+def get_mahallas_for_district(district_id: str, region_id: str = "") -> list:
+    """Get list of mahallas/areas for district or fallback to region's popular areas."""
+    if district_id and district_id != "all":
+        res = DISTRICT_MAHALLAS.get(district_id)
+        if res:
+            return res
+    if region_id:
+        res = REGION_POPULAR_AREAS.get(region_id)
+        if res:
+            return res
+    return REGION_POPULAR_AREAS.get("tashkent_city", [])
+

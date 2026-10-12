@@ -201,6 +201,7 @@ def _get_all_cached_channel_posts() -> List[dict]:
 
 async def search_channel_properties(
     district_query: str = "",
+    district_id: str = "",
     mahalla: str = "",
     property_type: str = "any",
     area_min: Optional[int] = None,
@@ -215,12 +216,19 @@ async def search_channel_properties(
         return []
         
     matched = []
+    
+    # Clean district_id for matching
+    clean_district_id = district_id.replace("_", " ").lower() if district_id else ""
+    
     for p in posts:
         txt = p["full_text"].lower()
         
-        # Match district / mahalla keywords
-        if district_query and district_query.lower() not in txt:
-            # Check without specific suffix
+        # Match district keywords
+        if clean_district_id:
+            clean_dq = district_query.lower().replace("ский", "").replace(" tumani", "").replace(" район", "") if district_query else ""
+            if clean_district_id not in txt and (not clean_dq or clean_dq not in txt):
+                continue
+        elif district_query:
             clean_d = district_query.lower().replace("ский", "").replace(" tumani", "").replace(" район", "")
             if clean_d and clean_d not in txt:
                 continue

@@ -233,6 +233,7 @@ async def search_olx_properties(
     property_type: str = "any",
     region_slug: str = "tashkent",
     district_query: str = "",
+    district_id: str = "",
     mahalla: str = "",
     area_min: Optional[int] = None,
     area_max: Optional[int] = None,
@@ -264,6 +265,7 @@ async def search_olx_properties(
         from services.channels_service import search_channel_properties
         channel_ads = await search_channel_properties(
             district_query=district_query,
+            district_id=district_id,
             mahalla=mahalla,
             property_type=property_type,
             area_min=area_min,

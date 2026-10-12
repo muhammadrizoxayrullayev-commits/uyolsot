@@ -97,6 +97,41 @@ def get_skip_keyboard(lang: str, back_callback: str = "back_to_district") -> Inl
         ]
     ])
 
+def get_mahalla_keyboard(district_id: str, lang: str, region_id: str = "", back_callback: str = "back_to_district") -> InlineKeyboardMarkup:
+    """Keyboard with popular mahallas for the district in a 2-column grid, plus Skip, Back, Cancel."""
+    from data.regions import get_mahallas_for_district
+    mahallas = get_mahallas_for_district(district_id, region_id)
+    keyboard = []
+    
+    if mahallas:
+        row = []
+        for m in mahallas:
+            if isinstance(m, dict):
+                name = m.get("name", "")
+                icon = m.get("icon", "📍")
+                label = f"{icon} {name}"
+            else:
+                name = str(m)
+                label = f"📍 {name}"
+            btn = InlineKeyboardButton(text=label, callback_data=f"mahalla:{name}")
+            row.append(btn)
+            if len(row) == 2:
+                keyboard.append(row)
+                row = []
+        if row:
+            keyboard.append(row)
+            
+    # Add Skip
+    keyboard.append([InlineKeyboardButton(text=get_text(lang, "btn_skip"), callback_data="skip_step")])
+    
+    # Add Back and Cancel
+    keyboard.append([
+        InlineKeyboardButton(text=get_text(lang, "btn_back"), callback_data=back_callback),
+        InlineKeyboardButton(text=get_text(lang, "btn_cancel"), callback_data="cancel_search")
+    ])
+    
+    return InlineKeyboardMarkup(inline_keyboard=keyboard)
+
 def get_property_type_keyboard(lang: str) -> InlineKeyboardMarkup:
     """Keyboard for selecting apartment, house or any."""
     return InlineKeyboardMarkup(inline_keyboard=[

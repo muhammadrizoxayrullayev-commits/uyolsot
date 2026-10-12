@@ -29,8 +29,9 @@ TEXTS = {
         "step_region": "📍 **1-Qadam: Qaysi viloyat yoki shahardan uy qidiryapsiz?**\nQuyidagi ro'yxatdan tanlang:",
         "step_district": "🏘 **2-Qadam: Qaysi tumanni tanlaysiz?**\nTanlangan hudud: **{region}**",
         "step_mahalla": (
-            "📍 **3-Qadam: Mahalla yoki ko'cha nomini kiriting:**\n\n"
-            "Masalan: `Dombirobod`, `Novza`, `Qatortol`, `Buyuk Ipak Yo'li`\n\n"
+            "📍 **3-Qadam: Mahalla yoki hududni tanlang:**\n\n"
+            "🔘 Quyidagi tugmalardan birini tanlang yoki aniq manzilni yozib yuboring:\n"
+            "*(Masalan: Dombirobod, Novza, Qatortol)*\n\n"
             "💡 *Agar muayyan mahalla muhim bo'lmasa, **⏭ O'tkazib yuborish** tugmasini bosing.*"
         ),
         "step_property_type": "🏢 **4-Qadam: Uy turini tanlang:**",
@@ -132,8 +133,9 @@ TEXTS = {
         "step_region": "📍 **Шаг 1: В каком регионе или городе вы ищете жилье?**\nВыберите из списка:",
         "step_district": "🏘 **Шаг 2: Выберите район:**\nВыбранный регион: **{region}**",
         "step_mahalla": (
-            "📍 **Шаг 3: Введите махаллю, улицу или ориентир:**\n\n"
-            "Например: `Домбрабад`, `Чиланзар 9`, `Новза`, `Катартал`\n\n"
+            "📍 **Шаг 3: Выберите махаллю или ориентир:**\n\n"
+            "🔘 Выберите из кнопок ниже или введите название вручную:\n"
+            "*(Например: Домбрабад, Чиланзар 9, Новза, Катартал)*\n\n"
             "💡 *Если конкретная махалля не важна, нажмите кнопку **⏭ Пропустить**.*"
         ),
         "step_property_type": "🏢 **Шаг 4: Выберите тип недвижимости:**",
@@ -234,8 +236,9 @@ TEXTS = {
         "step_region": "📍 **Step 1: In which region or city are you looking for property?**\nSelect from the list below:",
         "step_district": "🏘 **Step 2: Choose a district:**\nSelected region: **{region}**",
         "step_mahalla": (
-            "📍 **Step 3: Enter neighborhood / street / landmark:**\n\n"
-            "Example: `Dombirobod`, `Novza`, `Chilanzar 9`\n\n"
+            "📍 **Step 3: Choose neighborhood or landmark:**\n\n"
+            "🔘 Tap one of the buttons below or type a custom address:\n"
+            "*(Example: Dombirobod, Novza, Chilanzar 9)*\n\n"
             "💡 *If you don't have a specific neighborhood in mind, tap **⏭ Skip**.*"
         ),
         "step_property_type": "🏢 **Step 4: Select property type:**",

@@ -81,6 +81,7 @@ def _sync_fetch_uybor(
     property_type: str = "any",
     region_slug: str = "tashkent",
     district_query: str = "",
+    district_id: str = "",
     mahalla: str = "",
     area_min: Optional[int] = None,
     area_max: Optional[int] = None,
@@ -129,10 +130,23 @@ def _sync_fetch_uybor(
                 ad = _extract_ad(ad_raw)
                 
                 # Filter by text (district/mahalla) client side if provided
-                if district_query or mahalla:
-                    text_content = (ad.get("location_str", "") + " " + ad_raw.get("description", "")).lower()
-                    if district_query and district_query.lower() not in text_content:
-                        continue
+                if district_id or district_query or mahalla:
+                    desc = ad_raw.get("description") or ""
+                    text_content = (ad.get("location_str", "") + " " + desc).lower()
+                    
+                    if district_id or district_query:
+                        clean_did = district_id.replace("_", " ").lower() if district_id else ""
+                        clean_dq = district_query.lower().replace("ский", "").replace(" tumani", "").replace(" район", "") if district_query else ""
+                        
+                        match_found = False
+                        if clean_did and clean_did in text_content:
+                            match_found = True
+                        if not match_found and clean_dq and clean_dq in text_content:
+                            match_found = True
+                            
+                        if not match_found:
+                            continue
+
                     if mahalla and mahalla.lower() not in text_content:
                         continue
 
@@ -150,6 +164,7 @@ async def search_uybor_properties(
     property_type: str = "any",
     region_slug: str = "tashkent",
     district_query: str = "",
+    district_id: str = "",
     mahalla: str = "",
     area_min: Optional[int] = None,
     area_max: Optional[int] = None,
@@ -166,6 +181,7 @@ async def search_uybor_properties(
         property_type=property_type,
         region_slug=region_slug,
         district_query=district_query,
+        district_id=district_id,
         mahalla=mahalla,
         area_min=area_min,
         area_max=area_max,
